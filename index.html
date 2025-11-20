@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <title>Bütçe Koç</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    :root {
+      --bg: #f5f5f5;
+      --card-bg: #ffffff;
+      --text-main: #111111;
+      --text-muted: #777777;
+      --primary: #111111;
+      --danger: #c1121f;
+      --success: #0a7a1c;
+      --border: #dddddd;
+      --accent: #0077b6;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+    }
+
+    .app-header {
+      padding: 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .app-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .app-subtitle {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .tab-nav {
+      display: flex;
+      padding: 0 16px 12px;
+      background: #ffffff;
+      border-bottom: 1px solid #e0e0e0;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .tab-btn span.icon {
+      font-size: 14px;
+    }
+
+    .tab-btn.active {
+      background: #111111;
+      color: #ffffff;
+      border-color: #111111;
+      font-weight: 600;
+    }
+
+    .tab-btn:not(.active) {
+      border-color: #dddddd;
+      color: #444444;
+    }
+
+    main {
+      padding: 16px;
+      max-width: 900px;
+      margin: 0 auto 80px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .card-title {
+      margin: 0 0 6px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .muted {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .row-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .value {
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .value-pos { color: var(--success); }
+    .value-neg { color: var(--danger); }
+
+    .progress-bg {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #eeeeee;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      background: var(--accent);
+      border-radius: 999px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      font-weight: 600;
+    }
+
+    .btn-block {
+      width: 100%;
+      text-align: center;
+    }
+
+    .btn-sm {
+      padding: 6px 10px;
+      font-size: 12px;
+    }
+
+    .btn-outline {
+      background: transparent;
+    }
+
+    .screen-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 10px;
+    }
+
+    .list-item {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .list-item-title {
+      margin: 0;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .list-item-sub {
+      margin: 2px 0 0;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    input, select {
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      font-size: 13px;
+      width: 100%;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 12px;
+      cursor: pointer;
+      background: #ffffff;
+    }
+
+    .chip.active {
+      background: #111111;
+      color: #ffffff;
+      border-color: #111111;
+      font-weight: 500;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    .mini-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .danger-text { color: var(--danger); }
+
+    @media (max-width: 600px) {
+      .row-between {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <h1 class="app-title">Bütçe Koç</h1>
+    <p class="app-subtitle">Gelir, gider, borç ve hedeflerini tek ekranda takip et</p>
+  </header>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="dashboard">
+      <span class="icon">📊</span><span>Özet</span>
+    </button>
+    <button class="tab-btn" data-tab="transactions">
+      <span class="icon">📋</span><span>İşlemler</span>
+    </button>
+    <button class="tab-btn" data-tab="accounts">
+      <span class="icon">💳</span><span>Hesaplar</span>
+    </button>
+    <button class="tab-btn" data-tab="goals">
+      <span class="icon">🎯</span><span>Hedefler</span>
+    </button>
+  </nav>
+
+  <main>
+    <!-- DASHBOARD -->
+    <section id="tab-dashboard" class="section active">
+      <div class="card" id="card-month-summary"></div>
+      <div class="card" id="card-networth"></div>
+      <div class="card" id="card-credit"></div>
+      <div class="card" id="card-goals-mini"></div>
+      <div class="card" id="card-analysis"></div>
+      <button class="btn btn-outline btn-block" id="btn-reset">Verileri Sıfırla (Örnekleri Yükle)</button>
+    </section>
+
+    <!-- İŞLEMLER -->
+    <section id="tab-transactions" class="section">
+      <div class="card">
+        <div class="row-between">
+          <h2 class="screen-title">İşlemler</h2>
+        </div>
+        <form id="form-transaction">
+          <div class="input-row">
+            <div style="flex:1">
+              <label>Tutar</label>
+              <input type="number" step="0.01" id="tx-amount" placeholder="Ör: 150" required />
+            </div>
+            <div style="flex:1">
+              <label>Tür</label>
+              <div class="chip-row" id="tx-type-row">
+                <button type="button" class="chip active" data-txtype="expense">Gider</button>
+                <button type="button" class="chip" data-txtype="income">Gelir</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label>Açıklama</label>
+            <input type="text" id="tx-desc" placeholder="Ör: Migros alışverişi" required />
+          </div>
+          <div>
+            <label>Hesap</label>
+            <select id="tx-account" required></select>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">İşlemi Kaydet</button>
+          <p class="mini-text">Açıklamaya göre kategori otomatik tahmin edilir. (Migros → Market, Opet → Akaryakıt vb.)</p>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Son İşlemler</h3>
+        <div id="tx-list"></div>
+      </div>
+    </section>
+
+    <!-- HESAPLAR -->
+    <section id="tab-accounts" class="section">
+      <div class="card">
+        <h2 class="screen-title">Hesaplar</h2>
+        <form id="form-account">
+          <div>
+            <label>Hesap Adı</label>
+            <input type="text" id="acc-name" placeholder="Ör: Ziraat Bankası" required />
+          </div>
+          <div>
+            <label>Tür</label>
+            <div class="chip-row" id="acc-type-row"></div>
+          </div>
+          <div class="input-row">
+            <div style="flex:1">
+              <label>Başlangıç Bakiyesi</label>
+              <input type="number" step="0.01" id="acc-balance" placeholder="Ör: 0" />
+            </div>
+            <div style="flex:1" id="acc-limit-wrapper" style="display:none;">
+              <label>Kredi Kartı Limiti</label>
+              <input type="number" step="0.01" id="acc-limit" placeholder="Ör: 20000" />
+            </div>
+          </div>
+          <p class="mini-text" id="acc-help"></p>
+          <button class="btn btn-primary btn-block" type="submit">Hesap Ekle</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Hesap Listesi</h3>
+        <div id="acc-list"></div>
+      </div>
+    </section>
+
+    <!-- HEDEFLER -->
+    <section id="tab-goals" class="section">
+      <div class="card">
+        <h2 class="screen-title">Hedefler</h2>
+        <form id="form-goal">
+          <div>
+            <label>Hedef Adı</label>
+            <input type="text" id="goal-name" placeholder="Ör: Araba peşinatı" required />
+          </div>
+          <div class="input-row">
+            <div style="flex:1">
+              <label>Hedef Tutarı</label>
+              <input type="number" step="0.01" id="goal-target" placeholder="Ör: 200000" required />
+            </div>
+            <div style="flex:1">
+              <label>Şu Anda Birikmiş</label>
+              <input type="number" step="0.01" id="goal-current" placeholder="İstersen boş bırak" />
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit">Hedef Ekle</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3 class="card-title">Hedef Listesi</h3>
+        <div id="goal-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ---------- Yardımcı fonksiyonlar ----------
+
+    const STORAGE_KEY = "butce_koc_web_v1";
+
+    function formatTL(n) {
+      const num = Number(n || 0);
+      return num.toLocaleString("tr-TR", { maximumFractionDigits: 2 }) + " TL";
+    }
+
+    function guessCategory(desc) {
+      const text = (desc || "").toLowerCase();
+      const rules = [
+        { keywords: ["migros", "a101", "bim", "şok", "carrefour"], category: "Market" },
+        { keywords: ["opet", "shell", "total", "aytemiz", "po", "bp"], category: "Akaryakıt" },
+        {
+          keywords: ["yemeksepeti", "getir", "trendyol yemek", "mc", "burger king", "domino", "kafe", "cafe", "döner", "lahmacun", "pide"],
+          category: "Yeme-İçme",
+        },
+        {
+          keywords: ["dolmuş", "otobüs", "tramvay", "bilet", "havaş", "uber", "taksi", "uçak"],
+          category: "Ulaşım",
+        },
+        {
+          keywords: ["vodafone", "turkcell", "türk telekom", "internet", "fatura", "elektrik", "doğalgaz", "su"],
+          category: "Fatura",
+        },
+        { keywords: ["kira", "ev sahibi"], category: "Kira" },
+        { keywords: ["spotify", "netflix", "youtube premium", "prime"], category: "Abonelik" },
+        { keywords: ["aidat", "faiz", "kredi"], category: "Finans" },
+      ];
+
+      for (const rule of rules) {
+        if (rule.keywords.some(k => text.includes(k))) {
+          return rule.category;
+        }
+      }
+      return "Diğer";
+    }
+
+    const ACCOUNT_TYPES = [
+      { id: "cash", label: "Nakit" },
+      { id: "bank", label: "Banka" },
+      { id: "credit_card", label: "Kredi Kartı" },
+      { id: "loan", label: "Kredi / Borç" },
+      { id: "asset", label: "Varlık" },
+    ];
+
+    // ---------- Örnek veri ----------
+
+    const seedAccounts = [
+      { id: "a1", name: "Nakit", type: "cash", balance: 500 },
+      { id: "a2", name: "Bankamatik Hesabı", type: "bank", balance: 5000 },
+      { id: "a3", name: "İşbank Kredi Kartı", type: "credit_card", limit: 100000, balance: -95000 },
+      { id: "a4", name: "Enpara Kredi Kartı", type: "credit_card", limit: 15000, balance: -12000 },
+      { id: "a5", name: "Mevduat Hesabı", type: "asset", balance: 20000 },
+      { id: "a6", name: "Araba", type: "asset", balance: 300000 },
+    ];
+
+    const seedTransactions = [
+      { id: "t1", accountId: "a3", amount: -420, description: "Migros alışverişi", date: "2025-11-19", category: "Market" },
+      { id: "t2", accountId: "a3", amount: -700, description: "Opet akaryakıt", date: "2025-11-18", category: "Akaryakıt" },
+      { id: "t3", accountId: "a1", amount: 40000, description: "Maaş", date: "2025-11-01", category: "Gelir" },
+    ];
+
+    const seedGoals = [
+      { id: "g1", name: "Araba peşinatı", targetAmount: 200000, currentAmount: 50000, deadline: "2026-06-01" },
+      { id: "g2", name: "Acil durum fonu", targetAmount: 30000, currentAmount: 8000, deadline: "" },
+    ];
+
+    let state = {
+      accounts: [],
+      transactions: [],
+      goals: [],
+    };
+
+    // ---------- LocalStorage Yükleme / Kaydetme ----------
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          state.accounts = seedAccounts;
+          state.transactions = seedTransactions;
+          state.goals = seedGoals;
+        } else {
+          const parsed = JSON.parse(raw);
+          state.accounts = parsed.accounts || [];
+          state.transactions = parsed.transactions || [];
+          state.goals = parsed.goals || [];
+        }
+      } catch (e) {
+        console.error("Yükleme hatası:", e);
+        state.accounts = seedAccounts;
+        state.transactions = seedTransactions;
+        state.goals = seedGoals;
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        console.error("Kaydetme hatası:", e);
+      }
+    }
+
+    // ---------- Hesaplamalar ----------
+
+    function calcSummary() {
+      const now = new Date();
+      const month = now.getMonth();
+      const year = now.getFullYear();
+
+      let income = 0;
+      let expense = 0;
+      const catMap = {};
+
+      state.transactions.forEach(t => {
+        const d = new Date(t.date);
+        if (d.getMonth() === month && d.getFullYear() === year) {
+          if (t.amount > 0) income += t.amount;
+          if (t.amount < 0) expense += t.amount;
+
+          const cat = t.category || "Diğer";
+          if (!catMap[cat]) catMap[cat] = 0;
+          catMap[cat] += Math.abs(t.amount);
+        }
+      });
+
+      let topCategory = null;
+      let topAmount = 0;
+      Object.entries(catMap).forEach(([cat, amount]) => {
+        if (amount > topAmount) {
+          topAmount = amount;
+          topCategory = cat;
+        }
+      });
+
+      return {
+        income,
+        expense,
+        net: income + expense,
+        topCategory,
+        topAmount,
+      };
+    }
+
+    function calcNetWorth() {
+      let assets = 0;
+      let debts = 0;
+      state.accounts.forEach(a => {
+        if (a.balance >= 0) assets += a.balance;
+        else debts += Math.abs(a.balance);
+      });
+      return {
+        assets,
+        debts,
+        net: assets - debts,
+      };
+    }
+
+    function calcCreditSummary() {
+      let totalLimit = 0;
+      let totalUsed = 0;
+      state.accounts
+        .filter(a => a.type === "credit_card")
+        .forEach(a => {
+          const limit = a.limit || 0;
+          const used = -a.balance; // borç
+          totalLimit += limit;
+          totalUsed += used;
+        });
+      return { totalLimit, totalUsed };
+    }
+
+    // ---------- Render Fonksiyonları ----------
+
+    function renderDashboard() {
+      const monthSummary = calcSummary();
+      const netWorth = calcNetWorth();
+      const credit = calcCreditSummary();
+
+      // Ay özeti
+      const cardMonth = document.getElementById("card-month-summary");
+      cardMonth.innerHTML = `
+        <h3 class="card-title">Bu Ayın Özeti</h3>
+        <div class="row-between">
+          <div>
+            <div class="muted">Gelir</div>
+            <div class="value value-pos">${formatTL(monthSummary.income)}</div>
+          </div>
+          <div>
+            <div class="muted">Gider</div>
+            <div class="value value-neg">${formatTL(Math.abs(monthSummary.expense))}</div>
+          </div>
+          <div>
+            <div class="muted">Kalan</div>
+            <div class="value" style="color:${monthSummary.net >= 0 ? "#0a7a1c" : "#c1121f"}">
+              ${formatTL(monthSummary.net)}
+            </div>
+          </div>
+        </div>
+        ${
+          monthSummary.topCategory
+            ? `<p class="muted" style="margin-top:8px;">
+                Bu ay en çok harcama: <strong>${monthSummary.topCategory}</strong>
+                (${formatTL(monthSummary.topAmount)})
+               </p>`
+            : ""
+        }
+      `;
+
+      // Net varlık
+      const cardNW = document.getElementById("card-networth");
+      cardNW.innerHTML = `
+        <h3 class="card-title">Varlık & Borç</h3>
+        <div class="row-between">
+          <div>
+            <div class="muted">Toplam Varlık</div>
+            <div class="value value-pos">${formatTL(netWorth.assets)}</div>
+          </div>
+          <div>
+            <div class="muted">Toplam Borç</div>
+            <div class="value value-neg">${formatTL(netWorth.debts)}</div>
+          </div>
+          <div>
+            <div class="muted">Net Varlık</div>
+            <div class="value" style="color:${netWorth.net >= 0 ? "#0a7a1c" : "#c1121f"}">
+              ${formatTL(netWorth.net)}
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Kredi kartları
+      const cardCredit = document.getElementById("card-credit");
+      let html = `<h3 class="card-title">Kredi Kartları</h3>`;
+      const cards = state.accounts.filter(a => a.type === "credit_card");
+      if (cards.length === 0) {
+        html += `<p class="muted">Kayıtlı kredi kartı yok.</p>`;
+      } else {
+        cards.forEach(a => {
+          const limit = a.limit || 0;
+          const used = -a.balance;
+          const ratio = limit ? used / limit : 0;
+          const percent = Math.round(Math.min(1, Math.max(0, ratio)) * 100);
+          let risk = "Rahat";
+          if (ratio > 0.5) risk = "Dikkatli";
+          if (ratio > 0.8) risk = "Yüksek Risk";
+
+          let barColor = "#0a7a1c";
+          if (ratio > 0.5) barColor = "#f4a261";
+          if (ratio > 0.8) barColor = "#c1121f";
+
+          html += `
+            <div style="margin-bottom:10px">
+              <div style="font-weight:600">${a.name}</div>
+              <div class="muted">
+                Kullanılan: ${formatTL(used)} / Limit: ${formatTL(limit)} (${percent}%)
+              </div>
+              <div class="progress-bg">
+                <div class="progress-fill" style="width:${percent}%;background:${barColor};"></div>
+              </div>
+              <div class="muted" style="font-size:11px;">Durum: ${risk}</div>
+            </div>
+          `;
+        });
+        html += `
+          <p class="muted" style="margin-top:8px;font-size:12px;">
+            Toplam borç: ${formatTL(credit.totalUsed)} / Toplam limit: ${formatTL(credit.totalLimit)}
+          </p>
+        `;
+      }
+      cardCredit.innerHTML = html;
+
+      // Hedefler mini
+      const cardGoalsMini = document.getElementById("card-goals-mini");
+      let gHtml = `<h3 class="card-title">Hedefler</h3>`;
+      if (state.goals.length === 0) {
+        gHtml += `<p class="muted">Henüz hedef eklenmemiş.</p>`;
+      } else {
+        state.goals.forEach(g => {
+          const ratio = g.targetAmount ? Math.min(1, (g.currentAmount || 0) / g.targetAmount) : 0;
+          const percent = Math.round(ratio * 100);
+          gHtml += `
+            <div style="margin-bottom:10px">
+              <div style="font-weight:600">${g.name}</div>
+              <div class="muted">${formatTL(g.currentAmount)} / ${formatTL(g.targetAmount)} (${percent}%)</div>
+              <div class="progress-bg">
+                <div class="progress-fill" style="width:${percent}%;background:#0a7a1c;"></div>
+              </div>
+            </div>
+          `;
+        });
+      }
+      cardGoalsMini.innerHTML = gHtml;
+
+      // Mini analiz
+      const cardAnalysis = document.getElementById("card-analysis");
+      const creditRatio = credit.totalLimit
+        ? Math.round((credit.totalUsed / credit.totalLimit) * 100)
+        : null;
+      cardAnalysis.innerHTML = `
+        <h3 class="card-title">Mini Analiz</h3>
+        <p class="muted">
+          • Kalan paran ${monthSummary.net >= 0 ? "pozitif" : "negatif"} görünüyor.
+          ${
+            monthSummary.net < 0
+              ? "Giderlerini özellikle lüks ve dışarıda yeme içmeden kısmayı düşünebilirsin."
+              : "Bu ay harcama disiplinin fena değil, yine de kredi kartı dengesini koru."
+          }
+        </p>
+        <p class="muted">
+          • Borç / limit oranın: ${
+            creditRatio === null ? "—" : creditRatio + "%"
+          }. Bunu mümkünse %50 altına çekmek nefes aldırır.
+        </p>
+      `;
+    }
+
+    function renderTransactions() {
+      // Hesap select
+      const sel = document.getElementById("tx-account");
+      sel.innerHTML = "";
+      state.accounts.forEach(a => {
+        const opt = document.createElement("option");
+        opt.value = a.id;
+        opt.textContent = a.name;
+        sel.appendChild(opt);
+      });
+
+      // Liste
+      const wrap = document.getElementById("tx-list");
+      if (state.transactions.length === 0) {
+        wrap.innerHTML = `<p class="muted">Henüz işlem yok. Yukarıdan ekleyebilirsin.</p>`;
+        return;
+      }
+      wrap.innerHTML = "";
+      state.transactions.forEach(t => {
+        const acc = state.accounts.find(a => a.id === t.accountId);
+        const div = document.createElement("div");
+        div.className = "list-item";
+        div.innerHTML = `
+          <div>
+            <p class="list-item-title">${t.description}</p>
+            <p class="list-item-sub">${t.date} • ${t.category}${
+              acc ? " • " + acc.name : ""
+            }</p>
+          </div>
+          <div class="value" style="font-size:14px;color:${t.amount >= 0 ? "#0a7a1c" : "#c1121f"}">
+            ${formatTL(t.amount)}
+          </div>
+        `;
+        wrap.appendChild(div);
+      });
+    }
+
+    function renderAccounts() {
+      // Chipler (hesap tipleri)
+      const chipRow = document.getElementById("acc-type-row");
+      chipRow.innerHTML = "";
+      ACCOUNT_TYPES.forEach(t => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "chip";
+        btn.dataset.type = t.id;
+        btn.textContent = t.label;
+        chipRow.appendChild(btn);
+      });
+      // default: cash
+      const firstChip = chipRow.querySelector('[data-type="cash"]');
+      if (firstChip) firstChip.classList.add("active");
+      updateAccountTypeUI("cash");
+
+      // Liste
+      const wrap = document.getElementById("acc-list");
+      wrap.innerHTML = "";
+      if (state.accounts.length === 0) {
+        wrap.innerHTML = `<p class="muted">Henüz hesap eklenmemiş.</p>`;
+        return;
+      }
+
+      state.accounts.forEach(a => {
+        const isDebt = a.balance < 0;
+        const typeLabel =
+          (ACCOUNT_TYPES.find(t => t.id === a.type) || {}).label || a.type;
+        const div = document.createElement("div");
+        div.className = "card";
+        let extraHtml = "";
+        if (a.type === "credit_card") {
+          const used = Math.abs(a.balance);
+          const limit = a.limit || 0;
+          const ratio = limit ? used / limit : 0;
+          const percent = Math.round(Math.min(1, Math.max(0, ratio)) * 100);
+          extraHtml = `
+            <div class="muted" style="margin-top:4px;">
+              Limit: ${formatTL(limit)} • Kullanılan: ${formatTL(used)} (${percent}%)
+            </div>
+            <div class="progress-bg">
+              <div class="progress-fill" style="width:${percent}%;"></div>
+            </div>
+          `;
+        }
+        div.innerHTML = `
+          <div class="row-between">
+            <div>
+              <div style="font-weight:700;font-size:15px;">${a.name}</div>
+              <div class="muted">Tür: ${typeLabel}</div>
+            </div>
+            <div class="value" style="font-size:16px;color:${isDebt ? "#c1121f" : "#0a7a1c"}">
+              ${formatTL(a.balance)}
+            </div>
+          </div>
+          ${extraHtml}
+        `;
+        wrap.appendChild(div);
+      });
+    }
+
+    function renderGoals() {
+      const wrap = document.getElementById("goal-list");
+      wrap.innerHTML = "";
+      if (state.goals.length === 0) {
+        wrap.innerHTML = `<p class="muted">Henüz hedef eklenmemiş. Yukarıdan ekleyebilirsin.</p>`;
+        return;
+      }
+      state.goals.forEach(g => {
+        const ratio = g.targetAmount ? Math.min(1, (g.currentAmount || 0) / g.targetAmount) : 0;
+        const percent = Math.round(ratio * 100);
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <div style="font-weight:700;font-size:15px;margin-bottom:4px;">${g.name}</div>
+          <div class="muted">
+            ${formatTL(g.currentAmount)} / ${formatTL(g.targetAmount)} (${percent}%)
+          </div>
+          <div class="progress-bg">
+            <div class="progress-fill" style="width:${percent}%;background:${percent >= 100 ? "#0a7a1c" : "#0077b6"};"></div>
+          </div>
+          <div class="muted" style="margin-top:4px;font-size:12px;">
+            ${
+              g.deadline
+                ? "Hedef tarihi: " + g.deadline
+                : "Tarih belirlemediğin için esnek bir hedef."
+            }
+          </div>
+        `;
+        wrap.appendChild(div);
+      });
+    }
+
+    function renderAll() {
+      renderDashboard();
+      renderTransactions();
+      renderAccounts();
+      renderGoals();
+      // Hesap tip chip'leri eventlerini tekrar bağlayacağız (accounts renderında yaratılıyor)
+      initAccountTypeChips();
+    }
+
+    // ---------- UI Helpers ----------
+
+    function updateAccountTypeUI(type) {
+      const help = document.getElementById("acc-help");
+      const limitWrapper = document.getElementById("acc-limit-wrapper");
+      if (type === "credit_card") {
+        limitWrapper.style.display = "block";
+        help.textContent = "Kredi kartı borcu için bakiyeyi negatif (borç) olarak görebilirsin. Pozitif yazarsan otomatik eksi kabul edilir.";
+      } else if (type === "loan") {
+        limitWrapper.style.display = "none";
+        help.textContent = "Kredi / borç hesaplarında bakiye genelde negatif (borç) olur.";
+      } else {
+        limitWrapper.style.display = "none";
+        help.textContent = "Pozitif bakiyeler varlık, negatif bakiyeler borç anlamına gelir.";
+      }
+    }
+
+    function initAccountTypeChips() {
+      const chipRow = document.getElementById("acc-type-row");
+      const chips = chipRow.querySelectorAll(".chip");
+      chips.forEach(chip => {
+        chip.addEventListener("click", () => {
+          chips.forEach(c => c.classList.remove("active"));
+          chip.classList.add("active");
+          const t = chip.dataset.type;
+          updateAccountTypeUI(t);
+        });
+      });
+
+      // İşlem türü chipleri
+      const txTypeRow = document.getElementById("tx-type-row");
+      const txChips = txTypeRow.querySelectorAll(".chip");
+      txChips.forEach(chip => {
+        chip.addEventListener("click", () => {
+          txChips.forEach(c => c.classList.remove("active"));
+          chip.classList.add("active");
+        });
+      });
+    }
+
+    // ---------- Eventler ----------
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadState();
+      renderAll();
+
+      // Tablar
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const tab = btn.dataset.tab;
+          document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          document.querySelectorAll(".section").forEach(sec => {
+            sec.classList.toggle("active", sec.id === "tab-" + tab);
+          });
+        });
+      });
+
+      // İşlem formu
+      const txForm = document.getElementById("form-transaction");
+      txForm.addEventListener("submit", e => {
+        e.preventDefault();
+        const amount = parseFloat(document.getElementById("tx-amount").value);
+        const desc = document.getElementById("tx-desc").value.trim();
+        const accountId = document.getElementById("tx-account").value;
+        const typeBtn = document.querySelector("#tx-type-row .chip.active");
+        const txType = typeBtn ? typeBtn.dataset.txtype : "expense";
+
+        if (!desc || !accountId || !amount || amount <= 0) {
+          alert("Lütfen geçerli alanlar gir.");
+          return;
+        }
+        const signedAmount = txType === "income" ? amount : -amount;
+        const cat = txType === "income" ? "Gelir" : guessCategory(desc);
+
+        const tx = {
+          id: "t" + Date.now(),
+          accountId,
+          amount: signedAmount,
+          description: desc,
+          date: new Date().toISOString().slice(0, 10),
+          category: cat,
+        };
+
+        // Hesap bakiyesi güncelle
+        state.accounts = state.accounts.map(a =>
+          a.id === accountId ? { ...a, balance: (a.balance || 0) + signedAmount } : a
+        );
+        // İşlemi başa ekle
+        state.transactions = [tx, ...state.transactions];
+
+        saveState();
+        renderAll();
+
+        txForm.reset();
+        // Türü tekrar Gider'e al
+        document.querySelectorAll("#tx-type-row .chip").forEach(c => c.classList.remove("active"));
+        document.querySelector('#tx-type-row .chip[data-txtype="expense"]').classList.add("active");
+      });
+
+      // Hesap formu
+      const accForm = document.getElementById("form-account");
+      accForm.addEventListener("submit", e => {
+        e.preventDefault();
+        const name = document.getElementById("acc-name").value.trim();
+        const balanceVal = parseFloat(document.getElementById("acc-balance").value || "0");
+        const limitVal = parseFloat(document.getElementById("acc-limit").value || "0");
+        const typeBtn = document.querySelector("#acc-type-row .chip.active");
+        const type = typeBtn ? typeBtn.dataset.type : "cash";
+
+        if (!name) {
+          alert("Hesap adı boş olamaz.");
+          return;
+        }
+
+        let balance = isNaN(balanceVal) ? 0 : balanceVal;
+        const acc = { id: "a" + Date.now(), name, type, balance };
+
+        if (type === "credit_card") {
+          acc.limit = isNaN(limitVal) ? 0 : limitVal;
+          if (balance > 0) balance = -balance;
+          acc.balance = balance;
+        }
+
+        state.accounts.push(acc);
+        saveState();
+        renderAll();
+        accForm.reset();
+        updateAccountTypeUI("cash");
+      });
+
+      // Hedef formu
+      const goalForm = document.getElementById("form-goal");
+      goalForm.addEventListener("submit", e => {
+        e.preventDefault();
+        const name = document.getElementById("goal-name").value.trim();
+        const targetVal = parseFloat(document.getElementById("goal-target").value || "0");
+        const currentVal = parseFloat(document.getElementById("goal-current").value || "0");
+
+        if (!name || !targetVal || targetVal <= 0) {
+          alert("Geçerli bir hedef adı ve tutarı gir.");
+          return;
+        }
+
+        const goal = {
+          id: "g" + Date.now(),
+          name,
+          targetAmount: targetVal,
+          currentAmount: isNaN(currentVal) ? 0 : currentVal,
+          deadline: "",
+        };
+
+        state.goals.push(goal);
+        saveState();
+        renderAll();
+        goalForm.reset();
+      });
+
+      // Verileri sıfırla
+      document.getElementById("btn-reset").addEventListener("click", () => {
+        if (confirm("Tüm veriler silinecek ve örnek veriler yüklenecek. Emin misin?")) {
+          state.accounts = seedAccounts;
+          state.transactions = seedTransactions;
+          state.goals = seedGoals;
+          saveState();
+          renderAll();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
